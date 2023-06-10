@@ -25,13 +25,13 @@ public class TransactionController {
     @Transactional(readOnly = true)
     @GetMapping("/transactions/filterByNameCustomer")
     public ResponseEntity<List<Transaction>> getAllTransactionsByNameCustomer(@RequestParam(value = "nameCustomer") String nameCustomer){
-        return new ResponseEntity<List<Transaction>>(transactionRepository.filterByNameCustomer(nameCustomer), HttpStatus.OK);
+        return new ResponseEntity<List<Transaction>>(transactionRepository.findByAccount_NameCustomer(nameCustomer), HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)
     @GetMapping("/transactions/filterByCreateDateRange")
     public ResponseEntity<List<Transaction>> getAllTransactionsByCreateDateRange(@RequestParam(value = "from") LocalDate from, @RequestParam(value = "to") LocalDate to){
-        return new ResponseEntity<>(transactionRepository.filterByCreateDateRange(from,to),HttpStatus.OK);
+        return new ResponseEntity<>(transactionRepository.findByCreateDateRange(from,to),HttpStatus.OK);
     }
 
     @Transactional

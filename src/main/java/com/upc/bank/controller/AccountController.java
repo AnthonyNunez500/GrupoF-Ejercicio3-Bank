@@ -51,4 +51,10 @@ public class AccountController {
 
         }
     }
+
+    private void existsByTitleAndEditorial(Account account){
+        if (accountRepository.existsByNameCustomerAndNumberAccount(account.getNameCustomer(), account.getNumberAccount())){
+            throw new ValidationException("No se puede registrar la cuenta porque ya existe uno con estos datos");
+        }
+    }
 }
