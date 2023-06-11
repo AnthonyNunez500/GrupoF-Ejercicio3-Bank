@@ -1,6 +1,7 @@
 package com.upc.bank.controller;
 
 import com.upc.bank.exception.ResourceNotFoundException;
+import com.upc.bank.exception.ValidationException;
 import com.upc.bank.model.Account;
 import com.upc.bank.model.Transaction;
 import com.upc.bank.repository.AccountRepository;
@@ -39,6 +40,25 @@ public class TransactionController {
     public ResponseEntity<Transaction> registerTransaction(@PathVariable(name = "id") Long AccountId, @RequestBody Transaction transaction){
         Account account=accountRepository.findById(AccountId)
                 .orElseThrow(()->new ResourceNotFoundException("No se encuentra cuenta con el id ingresado"));
+        validateTransaction(transaction);
         return new ResponseEntity<Transaction>(transactionRepository.save(transaction),HttpStatus.CREATED);
+    }
+
+    private void validateTransaction(Transaction transaction){
+        if (transaction.getType()==null || transaction.getType().trim().isEmpty()){
+            throw new ValidationException("El tipo de transacción bancaria debe ser obligatorio");
+        }
+        if (transaction.getAmount()<=0.0 && (transaction.getType()=="Deposito" || transaction.getType()=="Retiro")){
+            throw new ValidationException("El monto en una transacción bancaria debe ser mayor de S/.0.0");
+        }
+        if (transaction.getAmount()>transaction.getBalance()){
+            throw new ValidationException("En una transacción bancaria tipo retiro el monto no puede ser mayor al saldo");
+        }
+        if (transaction.getType()=="Deposito"){
+            transaction.setBalance(transaction.getBalance()+transaction.getAmount());
+        }
+        if (transaction.getType()=="Retiro" && transaction.getAmount()<transaction.getBalance()){
+            transaction.setBalance(transaction.getBalance()-transaction.getAmount());
+        }
     }
 }

@@ -41,13 +41,13 @@ public class AccountController {
             throw new ValidationException("El nombre del cliente debe ser obligatorio");
         }
         if (account.getNameCustomer().length() > 30) {
-            throw new ValidationException("“El nombre del cliente no debe exceder los 30 caracteres");
+            throw new ValidationException("El nombre del cliente no debe exceder los 30 caracteres");
         }
         if (account.getNumberAccount() == null || account.getNumberAccount().trim().isEmpty()) {
             throw new ValidationException("El número de cuenta debe ser obligatorio”");
         }
         if (account.getNumberAccount().length() != 13) {
-            throw new ValidationException("“El número de cuenta debe tener una longitud de 13 caracteres");
+            throw new ValidationException("El número de cuenta debe tener una longitud de 13 caracteres");
 
         }
     }
