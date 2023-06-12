@@ -32,7 +32,7 @@ public class TransactionController {
     @Transactional(readOnly = true)
     @GetMapping("/transactions/filterByCreateDateRange")
     public ResponseEntity<List<Transaction>> getAllTransactionsByCreateDateRange(@RequestParam(value = "from") LocalDate from, @RequestParam(value = "to") LocalDate to){
-        return new ResponseEntity<>(transactionRepository.findByCreateDateBetween(from,to),HttpStatus.OK);
+        return new ResponseEntity<>(transactionRepository.findByCreateDateRange(from,to),HttpStatus.OK);
     }
 
     @Transactional
