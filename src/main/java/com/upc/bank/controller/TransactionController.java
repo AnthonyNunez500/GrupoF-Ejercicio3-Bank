@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+@RestController
 @RequestMapping("/api/bank/v1")
 public class TransactionController {
     private TransactionRepository transactionRepository;
@@ -24,23 +25,25 @@ public class TransactionController {
     }
 
     @Transactional(readOnly = true)
-    @GetMapping("/transactions/filterByNameCustomer")
+    @RequestMapping("/transactions/filterByNameCustomer")
     public ResponseEntity<List<Transaction>> getAllTransactionsByNameCustomer(@RequestParam(value = "nameCustomer") String nameCustomer){
         return new ResponseEntity<List<Transaction>>(transactionRepository.findByAccount_NameCustomer(nameCustomer), HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)
-    @GetMapping("/transactions/filterByCreateDateRange")
+    @RequestMapping("/transactions/filterByCreateDateRange")
     public ResponseEntity<List<Transaction>> getAllTransactionsByCreateDateRange(@RequestParam(value = "from") LocalDate from, @RequestParam(value = "to") LocalDate to){
         return new ResponseEntity<>(transactionRepository.findByCreateDateBetween(from,to),HttpStatus.OK);
     }
 
     @Transactional
-    @PostMapping("/accounts/{id}/transactions")
-    public ResponseEntity<Transaction> registerTransaction(@PathVariable(name = "id") Long AccountId, @RequestBody Transaction transaction){
-        Account account=accountRepository.findById(AccountId)
+    @RequestMapping("/accounts/{id}/transactions")
+    public ResponseEntity<Transaction> createTransaction( @PathVariable(value = "id") long accountId,
+                                                            @RequestBody Transaction transaction){
+        Account account=accountRepository.findById(accountId)
                 .orElseThrow(()->new ResourceNotFoundException("No se encuentra cuenta con el id ingresado"));
         validateTransaction(transaction);
+        transaction.setCreateDate(LocalDate.now());
         return new ResponseEntity<Transaction>(transactionRepository.save(transaction),HttpStatus.CREATED);
     }
 
