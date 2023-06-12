@@ -37,6 +37,9 @@ public class AccountController {
     }
 
     private void validateAccount(Account account) {
+        if (accountRepository.existsByNameCustomerAndNumberAccount(account.getNameCustomer(), account.getNumberAccount())){
+            throw new ValidationException("No se puede registrar la cuenta porque ya existe uno con estos datos");
+        }
         if (account.getNameCustomer() == null || account.getNameCustomer().trim().isEmpty()) {
             throw new ValidationException("El nombre del cliente debe ser obligatorio");
         }
@@ -48,7 +51,6 @@ public class AccountController {
         }
         if (account.getNumberAccount().length() != 13) {
             throw new ValidationException("El número de cuenta debe tener una longitud de 13 caracteres");
-
         }
     }
 
