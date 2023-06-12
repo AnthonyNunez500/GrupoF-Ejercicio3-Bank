@@ -32,14 +32,12 @@ public class AccountController {
     @Transactional
     @PostMapping("/accounts")
     public ResponseEntity<Account> createAccount(@RequestBody Account account) {
+        existsByTitleAndEditorial(account);
         validateAccount(account);
         return new ResponseEntity<>(accountService.createAccount(account), HttpStatus.CREATED);
     }
 
     private void validateAccount(Account account) {
-        if (accountRepository.existsByNameCustomerAndNumberAccount(account.getNameCustomer(), account.getNumberAccount())){
-            throw new ValidationException("No se puede registrar la cuenta porque ya existe uno con estos datos");
-        }
         if (account.getNameCustomer() == null || account.getNameCustomer().trim().isEmpty()) {
             throw new ValidationException("El nombre del cliente debe ser obligatorio");
         }
